@@ -175,6 +175,7 @@ function showPreview(html) {
   closeBtn.style.justifyContent = "center";
   closeBtn.onclick = () => {
     cleanupSelection();
+    showToast("Mirror Stopped");
     chrome.runtime.sendMessage({ action: "mirror-stopped" });
   };
 
@@ -307,7 +308,7 @@ function cleanupSelection() {
 
 function stopmirrorSelection() {
   cleanupSelection();
-  showToast("Mirror stopped");
+  showToast("Mirror Stopped");
   chrome.runtime.sendMessage({ action: "mirror-stopped" });
 }
 
