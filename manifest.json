@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "Mimic",
+  "version": "1.0",
+  "description": "Extract HTML and computed CSS from any UI element on a website.",
+  "permissions": ["contextMenus", "scripting", "activeTab", "clipboardWrite"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": ["<all_urls>"]
+}
