@@ -1,13 +1,13 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
-    id: "mimic-extract",
-    title: "Start Mimic Selection",
+    id: "mirror-extract",
+    title: "Start Mirror",
     contexts: ["all"]
   });
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "mimic-extract") {
-    chrome.tabs.sendMessage(tab.id, { action: "start-mimic" });
+  if (info.menuItemId === "mirror-extract") {
+    chrome.tabs.sendMessage(tab.id, { action: "start-mirror" });
   }
 });

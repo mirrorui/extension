@@ -1,5 +1,5 @@
 let hoverBox;
-let mimicLabel;
+let mirrorLabel;
 
 function getComputedCSS(target) {
   if (!(target instanceof Element)) return "";
@@ -36,35 +36,35 @@ function inlineAllStyles(element) {
   return clone;
 }
 
-function startMimicSelection() {
-  showMimicLabel();
+function startmirrorSelection() {
+  showmirrorLabel();
   document.addEventListener("mouseover", handleHover);
   document.addEventListener("click", handleLeftClick, { once: true });
   document.addEventListener("contextmenu", handleRightClick, { once: true });
 }
 
-function showMimicLabel() {
-  mimicLabel = document.createElement("div");
-  mimicLabel.innerText = "Mimic Active";
-  mimicLabel.style.position = "fixed";
-  mimicLabel.style.top = "10px";
-  mimicLabel.style.left = "50%";
-  mimicLabel.style.transform = "translateX(-50%) translateY(-20px)";
-  mimicLabel.style.opacity = "0";
-  mimicLabel.style.transition = "transform 0.3s ease, opacity 0.3s ease";
-  mimicLabel.style.zIndex = "999999";
-  mimicLabel.style.background = "#00BFFF";
-  mimicLabel.style.color = "#FFFFFF";
-  mimicLabel.style.padding = "8px 16px";
-  mimicLabel.style.borderRadius = "8px";
-  mimicLabel.style.fontFamily = "monospace";
-  mimicLabel.style.fontSize = "14px";
-  mimicLabel.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
-  mimicLabel.style.display = "flex";
-  mimicLabel.style.alignItems = "center";
-  mimicLabel.style.gap = "12px";
-  mimicLabel.style.pointerEvents = "none";
-  mimicLabel.style.userSelect = "none";
+function showmirrorLabel() {
+  mirrorLabel = document.createElement("div");
+  mirrorLabel.innerText = "Mirror Active";
+  mirrorLabel.style.position = "fixed";
+  mirrorLabel.style.top = "10px";
+  mirrorLabel.style.left = "50%";
+  mirrorLabel.style.transform = "translateX(-50%) translateY(-20px)";
+  mirrorLabel.style.opacity = "0";
+  mirrorLabel.style.transition = "transform 0.3s ease, opacity 0.3s ease";
+  mirrorLabel.style.zIndex = "999999";
+  mirrorLabel.style.background = "#00BFFF";
+  mirrorLabel.style.color = "#FFFFFF";
+  mirrorLabel.style.padding = "8px 16px";
+  mirrorLabel.style.borderRadius = "8px";
+  mirrorLabel.style.fontFamily = "monospace";
+  mirrorLabel.style.fontSize = "14px";
+  mirrorLabel.style.boxShadow = "0 2px 6px rgba(0,0,0,0.2)";
+  mirrorLabel.style.display = "flex";
+  mirrorLabel.style.alignItems = "center";
+  mirrorLabel.style.gap = "12px";
+  mirrorLabel.style.pointerEvents = "none";
+  mirrorLabel.style.userSelect = "none";
 
   const closeBtn = document.createElement("span");
   closeBtn.innerText = "✕";
@@ -77,12 +77,12 @@ function showMimicLabel() {
   closeBtn.title = "Cancel";
   closeBtn.onclick = handleCloseLabel;
 
-  mimicLabel.appendChild(closeBtn);
-  document.body.appendChild(mimicLabel);
+  mirrorLabel.appendChild(closeBtn);
+  document.body.appendChild(mirrorLabel);
 
   requestAnimationFrame(() => {
-    mimicLabel.style.opacity = "1";
-    mimicLabel.style.transform = "translateX(-50%) translateY(0)";
+    mirrorLabel.style.opacity = "1";
+    mirrorLabel.style.transform = "translateX(-50%) translateY(0)";
   });
 }
 
@@ -135,9 +135,9 @@ function cleanupSelection() {
     hoverBox.remove();
     hoverBox = null;
   }
-  if (mimicLabel) {
-    mimicLabel.remove();
-    mimicLabel = null;
+  if (mirrorLabel) {
+    mirrorLabel.remove();
+    mirrorLabel = null;
   }
 
   document.removeEventListener("mouseover", handleHover);
@@ -146,7 +146,7 @@ function cleanupSelection() {
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "start-mimic") {
-    startMimicSelection();
+  if (request.action === "start-mirror") {
+    startmirrorSelection();
   }
 });
