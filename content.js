@@ -86,6 +86,39 @@ function showmirrorLabel() {
   });
 }
 
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.innerText = message;
+  toast.style.position = "fixed";
+  toast.style.bottom = "32px";
+  toast.style.left = "50%";
+  toast.style.transform = "translateX(-50%)";
+  toast.style.background = "#00BFFF";
+  toast.style.color = "#fff";
+  toast.style.padding = "10px 20px";
+  toast.style.borderRadius = "6px";
+  toast.style.fontFamily = "monospace";
+  toast.style.fontSize = "14px";
+  toast.style.boxShadow = "0 2px 10px rgba(0, 0, 0, 0.15)";
+  toast.style.opacity = "0";
+  toast.style.transition = "opacity 0.3s ease, transform 0.3s ease";
+  toast.style.zIndex = "999999";
+  toast.style.pointerEvents = "none";
+
+  document.body.appendChild(toast);
+
+  requestAnimationFrame(() => {
+    toast.style.opacity = "1";
+    toast.style.transform = "translateX(-50%) translateY(0)";
+  });
+
+  setTimeout(() => {
+    toast.style.opacity = "0";
+    toast.style.transform = "translateX(-50%) translateY(20px)";
+    toast.addEventListener("transitionend", () => toast.remove());
+  }, 2000);
+}
+
 
 function handleCloseLabel(e) {
   e.preventDefault();
@@ -120,7 +153,7 @@ function handleLeftClick(e) {
   const result = container.innerHTML;
 
   navigator.clipboard.writeText(result);
-  alert("Copied!");
+  showToast("Copied!");
 
   cleanupSelection();
 }
