@@ -1,5 +1,6 @@
 let hoverBox;
 let mirrorLabel;
+let previewWrapper;
 
 function getComputedCSS(target) {
   if (!(target instanceof Element)) return "";
@@ -53,7 +54,8 @@ function showmirrorLabel() {
   mirrorLabel.style.opacity = "0";
   mirrorLabel.style.transition = "transform 0.3s ease, opacity 0.3s ease";
   mirrorLabel.style.zIndex = "999999";
-  mirrorLabel.style.background = "#FFFFFF";
+  mirrorLabel.style.background = "rgba(255, 255, 255, 0.5)";
+  mirrorLabel.style.backdropFilter = 'blur(4px)';
   mirrorLabel.style.color = "#000000";
   mirrorLabel.style.padding = "8px 16px";
   mirrorLabel.style.borderRadius = "8px";
@@ -90,13 +92,14 @@ function showToast(message) {
   const toast = document.createElement("div");
   toast.innerText = message;
   toast.style.position = "fixed";
-  toast.style.bottom = "32px";
+  toast.style.top = "10px";
   toast.style.left = "50%";
-  toast.style.transform = "translateX(-50%)";
-  toast.style.background = "#00BFFF";
-  toast.style.color = "#fff";
+  toast.style.transform = "translateX(-50%) translateY(-20px)";
+  toast.style.background = "rgba(255, 255, 255, 0.5)";
+  toast.style.backdropFilter = 'blur(4px)';
+  toast.style.color = "#000000";
   toast.style.padding = "10px 20px";
-  toast.style.borderRadius = "6px";
+  toast.style.borderRadius = "8px";
   toast.style.border = "1px solid #ccc";
   toast.style.fontFamily = "monospace";
   toast.style.fontSize = "14px";
@@ -130,7 +133,8 @@ function showPreview(html) {
   wrapper.style.bottom = "80px";
   wrapper.style.right = "20px";
   
-  wrapper.style.background = "#fff";
+  wrapper.style.background = "rgba(255, 255, 255, 0.5)";
+  wrapper.style.backdropFilter = 'blur(4px)';
   wrapper.style.border = "1px solid #ccc";
   wrapper.style.borderRadius = "8px";
   wrapper.style.zIndex = "999999";
@@ -145,9 +149,10 @@ function showPreview(html) {
 
   const header = document.createElement("div");
   header.style.position = "relative";
-  header.style.padding = "6px 32px 6px 12px";
-  header.style.background = "#f9f9f9";
-  header.style.borderBottom = "1px solid #ddd";
+  header.style.padding = "12px 32px 20px 12px";
+  header.style.borderBottom = "1px solid #ccc";
+  header.style.background = "rgba(255, 255, 255, 0.5)";
+  wrapper.style.backdropFilter = 'blur(16px)';
   header.style.cursor = "move";
   header.style.userSelect = "none";
 
@@ -162,13 +167,16 @@ function showPreview(html) {
   closeBtn.style.zIndex = "1000000";
   closeBtn.style.background = "#fff";
   closeBtn.style.borderRadius = "50%";
+  closeBtn.style.border = "1px solid #ccc";
   closeBtn.style.width = "20px";
   closeBtn.style.height = "20px";
   closeBtn.style.display = "flex";
   closeBtn.style.alignItems = "center";
   closeBtn.style.justifyContent = "center";
-  closeBtn.style.boxShadow = "0 0 4px rgba(0,0,0,0.1)";
-  closeBtn.onclick = () => wrapper.remove();
+  closeBtn.onclick = () => {
+    cleanupSelection();
+    chrome.runtime.sendMessage({ action: "mirror-stopped" });
+  };
 
   header.appendChild(closeBtn);
 
@@ -182,6 +190,7 @@ function showPreview(html) {
   wrapper.appendChild(header);
   wrapper.appendChild(scrollable);
   document.body.appendChild(wrapper);
+  previewWrapper = wrapper;
 
   let isDragging = false;
   let startX, startY, startLeft, startTop;
@@ -237,6 +246,7 @@ function handleCloseLabel(e) {
   e.preventDefault();
   e.stopPropagation();
   cleanupSelection();
+  chrome.runtime.sendMessage({ action: "mirror-stopped" });
 }
 
 function handleHover(e) {
@@ -265,9 +275,10 @@ function handleLeftClick(e) {
   container.appendChild(inlined);
   const result = container.innerHTML;
 
-  showPreview(result);
+  navigator.clipboard.writeText(result);
 
   cleanupSelection();
+  showPreview(result);
 }
 
 function handleRightClick(e) {
@@ -284,14 +295,26 @@ function cleanupSelection() {
     mirrorLabel.remove();
     mirrorLabel = null;
   }
+  if (previewWrapper) {
+  previewWrapper.remove();
+  previewWrapper = null;
+  }
 
   document.removeEventListener("mouseover", handleHover);
   document.removeEventListener("click", handleLeftClick, { once: true });
   document.removeEventListener("contextmenu", handleRightClick, { once: true });
 }
 
+function stopmirrorSelection() {
+  cleanupSelection();
+  showToast("Mirror stopped");
+  chrome.runtime.sendMessage({ action: "mirror-stopped" });
+}
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "start-mirror") {
     startmirrorSelection();
+  } else if (request.action === "stop-mirror") {
+    stopmirrorSelection();
   }
 });
