@@ -72,8 +72,17 @@ function showmirrorLabel() {
   closeBtn.innerText = "✕";
   closeBtn.style.cursor = "pointer";
   closeBtn.style.marginLeft = "8px";
-  closeBtn.style.color = "#000000";
+  closeBtn.style.color = "#999";
+  closeBtn.style.background = "rgba(255, 255, 255, 0.5)";
+  closeBtn.style.backdropFilter = 'blur(16px)';
+  closeBtn.style.borderRadius = "50%";
+  closeBtn.style.border = "1px solid #ccc";
   closeBtn.style.fontSize = "16px";
+  closeBtn.style.width = "25px";
+  closeBtn.style.height = "25px";
+  closeBtn.style.display = "flex";
+  closeBtn.style.alignItems = "center";
+  closeBtn.style.justifyContent = "center";
   closeBtn.style.pointerEvents = "auto";
   closeBtn.style.userSelect = "none";
   closeBtn.title = "Cancel";
@@ -151,7 +160,7 @@ function showPreview(html) {
   header.style.position = "relative";
   header.style.padding = "12px 32px 20px 12px";
   header.style.borderBottom = "1px solid #ccc";
-  header.style.background = "rgba(255, 255, 255, 0.5)";
+  header.style.background = "rgba(250, 250, 250, 0.5)";
   wrapper.style.backdropFilter = 'blur(16px)';
   header.style.cursor = "move";
   header.style.userSelect = "none";
@@ -247,6 +256,7 @@ function handleCloseLabel(e) {
   e.preventDefault();
   e.stopPropagation();
   cleanupSelection();
+  showToast("Mirror Stopped");
   chrome.runtime.sendMessage({ action: "mirror-stopped" });
 }
 
@@ -285,6 +295,8 @@ function handleLeftClick(e) {
 function handleRightClick(e) {
   e.preventDefault();
   cleanupSelection();
+  showToast("Mirror Stopped");
+  chrome.runtime.sendMessage({ action: "mirror-stopped" });
 }
 
 function cleanupSelection() {
