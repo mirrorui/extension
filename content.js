@@ -54,7 +54,7 @@ function showmirrorLabel() {
   mirrorLabel.style.opacity = "0";
   mirrorLabel.style.transition = "transform 0.3s ease, opacity 0.3s ease";
   mirrorLabel.style.zIndex = "999999";
-  mirrorLabel.style.background = "rgba(255, 255, 255, 0.5)";
+  mirrorLabel.style.background = "rgba(252, 252, 252, 0.5)";
   mirrorLabel.style.backdropFilter = 'blur(4px)';
   mirrorLabel.style.color = "#777777";
   mirrorLabel.style.padding = "8px 16px";
@@ -105,7 +105,7 @@ function showToast(message) {
   toast.style.top = "10px";
   toast.style.left = "50%";
   toast.style.transform = "translateX(-50%) translateY(-20px)";
-  toast.style.background = "rgba(255, 255, 255, 0.5)";
+  toast.style.background = "rgba(252, 252, 252, 0.5)";
   toast.style.backdropFilter = 'blur(4px)';
   toast.style.color = "#777777";
   toast.style.padding = "10px 20px";
@@ -153,16 +153,17 @@ function showPreview(html) {
   toolbar.style.backdropFilter = "blur(4px)";
   toolbar.style.border = "1px solid #ccc";
   toolbar.style.borderRadius = "8px";
-  toolbar.style.padding = "4px 8px";
+  toolbar.style.padding = "4px 4px";
   toolbar.style.display = "flex";
   toolbar.style.alignItems = "center";
   toolbar.style.gap = "12px";
   toolbar.style.fontFamily = '"Geist", sans-serif';
   toolbar.style.userSelect = "none";
   toolbar.style.fontSize = "14px";
-  toolbar.style.color = "#777";
+  toolbar.style.color = "#555";
   const label = document.createElement("span");
   label.innerText = "Export:";
+  label.style.marginLeft = "2px"
   label.style.fontWeight = "500";
 
   function createExportButton(label, iconClass, onClick) {
@@ -248,7 +249,7 @@ function showPreview(html) {
   title.style.fontWeight = "500";
   title.style.fontSize = "14px";
   title.style.fontFamily = '"Geist", sans-serif';
-  title.style.color = "#777777";
+  title.style.color = "#555";
   title.style.pointerEvents = "none";
 
   const openBtn = document.createElement("div");
