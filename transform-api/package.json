@@ -1,0 +1,21 @@
+{
+  "name": "transform-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.5.0",
+    "express": "^4.21.2",
+    "html-to-vue": "^1.4.0",
+    "htmltojsx": "^0.3.0",
+    "node-fetch": "^3.3.2"
+  }
+}

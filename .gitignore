@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+.env
+*.log
+npm-debug.log*
+
+# Build outputs
+dist/
+build/
+*.local
+
+# Chrome extension-specific
+*.crx
+*.pem
+
+# Vercel / Deployments
+.vercel/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# API subproject
+transform-api/node_modules/
+transform-api/.env
+transform-api/npm-debug.log*

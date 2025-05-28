@@ -1,6 +1,7 @@
 let hoverBox;
 let mirrorLabel;
 let previewWrapper;
+let lastSelectedElement = null;
 
 function getComputedCSS(target) {
   if (!(target instanceof Element)) return "";
@@ -184,9 +185,28 @@ function showPreview(html) {
   }
 
   // --- React Button ---
-  const reactBtn = createExportButton("React", "fab fa-react", () => {
-    showToast("React export coming soon!");
-    // TODO: Replace with actual JSX export logic
+  const reactBtn = createExportButton("React", "fab fa-react", async () => {
+    const inlined = inlineAllStyles(lastSelectedElement);
+    const container = document.createElement("div");
+    container.appendChild(inlined);
+    const html = container.innerHTML;
+
+    try {
+      const response = await fetch("http://localhost:3000/convert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ html })
+      });
+
+      const { jsx } = await response.json();
+      await navigator.clipboard.writeText(jsx);
+      showToast("JSX copied to clipboard!");
+    } catch (err) {
+      console.error("Conversion failed", err);
+      showToast("JSX conversion failed");
+    }
   });
 
   // --- Vue Button ---
@@ -397,6 +417,8 @@ function handleHover(e) {
 function handleLeftClick(e) {
   e.preventDefault();
   e.stopPropagation();
+
+  lastSelectedElement = e.target;
 
   const inlined = inlineAllStyles(e.target);
   const container = document.createElement("div");
