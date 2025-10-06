@@ -1,4 +1,36 @@
+"use strict";
+
+const ICON_ON = {
+  16: "icons/icon-on-16.png",
+  32: "icons/icon-on-32.png",
+  48: "icons/icon-on-48.png",
+  128: "icons/icon-on-128.png"
+};
+
+const ICON_OFF = {
+  16: "icons/icon-off-16.png",
+  32: "icons/icon-off-32.png",
+  48: "icons/icon-off-48.png",
+  128: "icons/icon-off-128.png"
+};
+
 const mirrorState = {};
+
+function setIcon(tabId, on) {
+  chrome.action.setIcon({ tabId, path: on ? ICON_ON : ICON_OFF });
+}
+
+function start(tabId) {
+  chrome.tabs.sendMessage(tabId, { action: "start-mirror" });
+  mirrorState[tabId] = true;
+  setIcon(tabId, true);
+}
+
+function stop(tabId) {
+  chrome.tabs.sendMessage(tabId, { action: "stop-mirror" });
+  mirrorState[tabId] = false;
+  setIcon(tabId, false);
+}
 
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
@@ -9,31 +41,45 @@ chrome.runtime.onInstalled.addListener(() => {
 });
 
 chrome.contextMenus.onClicked.addListener((info, tab) => {
-  if (info.menuItemId === "mirror-extract") {
-    chrome.tabs.sendMessage(tab.id, { action: "start-mirror" });
-    mirrorState[tab.id] = true;
-    chrome.action.setBadgeText({ tabId: tab.id, text: "ON" });
-  }
+  if (info.menuItemId !== "mirror-extract" || !tab?.id) return;
+  start(tab.id);
 });
 
 chrome.action.onClicked.addListener((tab) => {
-  const tabId = tab.id;
-  const isRunning = mirrorState[tabId];
+  const tabId = tab?.id;
+  if (!tabId) return;
+  const isRunning = !!mirrorState[tabId];
+  isRunning ? stop(tabId) : start(tabId);
+});
 
-  if (isRunning) {
-    chrome.tabs.sendMessage(tabId, { action: "stop-mirror" });
-    mirrorState[tabId] = false;
-    chrome.action.setBadgeText({ tabId, text: "" });
-  } else {
-    chrome.tabs.sendMessage(tabId, { action: "start-mirror" });
-    mirrorState[tabId] = true;
-    chrome.action.setBadgeText({ tabId, text: "ON" });
+chrome.runtime.onMessage.addListener((message, sender) => {
+  if (message?.action !== "mirror-stopped") return;
+  const tabId = sender?.tab?.id;
+  if (!tabId) return;
+  mirrorState[tabId] = false;
+  setIcon(tabId, false);
+});
+
+chrome.tabs.onActivated.addListener(({ tabId }) => {
+  setIcon(tabId, !!mirrorState[tabId]);
+});
+
+chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
+  if (changeInfo.status === "loading" || changeInfo.status === "complete") {
+    setIcon(tabId, !!mirrorState[tabId]);
   }
 });
 
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message.action === "mirror-stopped" && sender.tab && sender.tab.id) {
-    mirrorState[sender.tab.id] = false;
-    chrome.action.setBadgeText({ tabId: sender.tab.id, text: "" });
-  }
+chrome.tabs.onRemoved.addListener((tabId) => {
+  delete mirrorState[tabId];
 });
+
+if (chrome.runtime.onStartup) {
+  chrome.runtime.onStartup.addListener(() => {
+    chrome.tabs.query({}, (tabs) => {
+      for (const t of tabs) {
+        setIcon(t.id, !!mirrorState[t.id]);
+      }
+    });
+  });
+}

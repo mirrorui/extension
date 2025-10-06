@@ -1,30 +1,33 @@
 {
   "manifest_version": 3,
   "name": "Mirror",
-  "version": "1.0",
+  "version": "1.0.0",
   "description": "Extract HTML and computed CSS from any UI element on a website.",
-  "permissions": ["contextMenus", "scripting", "activeTab", "clipboardWrite"],
+  "permissions": ["contextMenus", "activeTab", "tabs", "clipboardWrite"],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
+  },
+  "action": {
+    "default_title": "Toggle Mirror",
+    "default_icon": {
+      "16": "icons/icon-off-16.png",
+      "32": "icons/icon-off-32.png",
+      "48": "icons/icon-off-48.png",
+      "128": "icons/icon-off-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-off-16.png",
+    "32": "icons/icon-off-32.png",
+    "48": "icons/icon-off-48.png",
+    "128": "icons/icon-off-128.png"
   },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "js": ["content.js"],
+      "run_at": "document_idle"
     }
-  ],
-  "host_permissions": ["<all_urls>"],
-  "action": {
-    "default_title": "Toggle Mirror",
-    "default_icon": {
-      "16": "icon-16.png",
-      "48": "icon-48.png",
-      "128": "icon-128.png"
-    }
-  },
-  "icons": {
-    "16": "icon-16.png",
-    "48": "icon-48.png",
-    "128": "icon-128.png"
-  }
+  ]
 }
